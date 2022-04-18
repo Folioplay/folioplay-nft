@@ -23,6 +23,7 @@ contract NFTMarketplace is ERC721URIStorage {
       address payable owner;
       uint256 price;
       bool sold;
+      uint256 played;
     }
 
     event MarketItemCreated (
@@ -30,10 +31,11 @@ contract NFTMarketplace is ERC721URIStorage {
       address seller,
       address owner,
       uint256 price,
-      bool sold
+      bool sold,
+      uint256 played
     );
 
-    constructor() ERC721("Metaverse Tokens", "METT") {
+    constructor() ERC721("Folioplay NFTs", "FNFT") {
       owner = payable(msg.sender);
     }
 
@@ -71,7 +73,8 @@ contract NFTMarketplace is ERC721URIStorage {
         payable(msg.sender),
         payable(address(this)),
         price,
-        false
+        false,
+        0
       );
 
       _transfer(msg.sender, address(this), tokenId);
@@ -80,7 +83,8 @@ contract NFTMarketplace is ERC721URIStorage {
         msg.sender,
         address(this),
         price,
-        false
+        false,
+        0
       );
     }
 
@@ -177,5 +181,26 @@ contract NFTMarketplace is ERC721URIStorage {
         }
       }
       return items;
+    }
+
+    //NFT usage constraint
+
+    mapping(uint256 => Counters.Counter) public NFTusage;
+
+    function useNFT(uint256 _tokenId) public {
+        idToMarketItem[_tokenId].played = idToMarketItem[_tokenId].played++;
+    }
+
+    function getNftUsage(uint256 _tokenId) public view returns(uint256) {
+        return idToMarketItem[_tokenId].played;
+    }
+    
+    function checkNFTowner(address _nftContract, address _user) public view returns(bool) {
+        if(IERC721(_nftContract).balanceOf(_user)>=1){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }

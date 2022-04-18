@@ -32,6 +32,7 @@ export default function Home() {
       let item = {
         price,
         tokenId: i.tokenId.toNumber(),
+        played: i.played.toNumber(),
         seller: i.seller,
         owner: i.owner,
         image: meta.data.image,
@@ -52,7 +53,7 @@ export default function Home() {
     const contract = new ethers.Contract(marketplaceAddress, NFTMarketplace.abi, signer)
 
     /* user will be prompted to pay the asking proces to complete the transaction */
-    const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')   
+    const price = ethers.utils.parseUnits(nft.price.toString(), 'ether')  
     const transaction = await contract.createMarketSale(nft.tokenId, {
       value: price
     })
@@ -75,8 +76,8 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="p-4 bg-black">
-                  <p className="text-2xl font-bold text-white">{nft.price} ETH</p>
-                  <button className="mt-4 w-full bg-pink-500 text-white font-bold py-2 px-12 rounded" onClick={() => buyNft(nft)}>Buy</button>
+                  <p className="text-2xl font-bold text-white">{nft.price} ETH: {nft.played} games used</p>
+                  <button className="mt-4 w-full bg-purple-500 text-white font-bold py-2 px-12 rounded" onClick={() => buyNft(nft)}>Buy</button>
                 </div>
               </div>
             ))
